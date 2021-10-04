@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">TODOApp</string>
+    <string name="todo">TODO</string>
+    <string name="tittle">Tittle</string>
+    <string name="description">Description</string>
+    <string name="homework">Homework</string>
+    <string name="add_task">ADD TASK</string>
+    <string name="add_tasks">Add Task</string>
+    <string name="task_title">Task Title</string>
+    <string name="task_description">Task Description</string>
+    <string name="cancel">CANCEL</string>
+    <string name="add">ADD</string>
+    <string name="active">ACTIVE</string>
+    <string name="none">NONE</string>
+</resources>
