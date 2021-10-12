@@ -23,7 +23,7 @@ import com.github.ajalt.timberkt.e
 import com.github.ajalt.timberkt.i
 
 
-class MenuFragment : BaseFragment<FragmentMenuBinding>(R.layout.fragment_menu) {
+class MenuFragment : BaseFragment<FragmentMenuBinding>(R.layout.fragment_menu), TODOAdapter.DataListener {
     private lateinit var tAdapter: TODOAdapter
     private lateinit var doneAdapter: DoneAdapter
     private val taskList = arrayListOf<Todo>()
@@ -34,7 +34,6 @@ class MenuFragment : BaseFragment<FragmentMenuBinding>(R.layout.fragment_menu) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         binding.btnAddTask.setOnClickListener {
             if (binding.editTextTitle.text.toString().isEmpty()
                 || binding.editTextDescription.text.toString().isEmpty()
@@ -44,14 +43,13 @@ class MenuFragment : BaseFragment<FragmentMenuBinding>(R.layout.fragment_menu) {
                 val title = binding.editTextTitle.text.toString()
                 val desc = binding.editTextDescription.text.toString()
                 taskList.add(Todo(title, desc))
-                tAdapter = TODOAdapter(requireContext(), taskList)
+                tAdapter = TODOAdapter(requireContext(), taskList, this)
                 binding.listview.adapter = tAdapter
             }
         }
-        if (this :: tAdapter.isInitialized){
-            taskList.addAll(tAdapter.getDeletedList())
-            doneAdapter = DoneAdapter(requireContext(), doneList)
-            binding.listItem.adapter = doneAdapter
+
+        binding.listview.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+
         }
 
 
@@ -62,6 +60,14 @@ class MenuFragment : BaseFragment<FragmentMenuBinding>(R.layout.fragment_menu) {
             } else {
                 ForegroundService.stopService(requireContext())
             }
+        }
+    }
+
+    override fun dataListener(data: ArrayList<Todo>) {
+        if (this::tAdapter.isInitialized && tAdapter.getDeletedList().size > 0) {
+            doneList.addAll(tAdapter.getDeletedList())
+            doneAdapter = DoneAdapter(requireContext(), doneList)
+            binding.listItem.adapter = doneAdapter
         }
     }
 

@@ -9,13 +9,13 @@ import com.example.todoapp.databinding.ItemTodoBinding
 import com.example.todoapp.extension.hide
 import com.example.todoapp.model.Todo
 import com.github.ajalt.timberkt.i
-
 class TODOAdapter(
     private val context: Context,
-    private var data: List<Todo>,
+    private var data: ArrayList<Todo>,
+    private val listener: DataListener
 ) : BaseAdapter<Todo>(context, data) {
-    val newList = arrayListOf<Todo>()
-    val list: MutableList<Todo> = arrayListOf()
+    private var dataListener: DataListener = listener
+    private val list = arrayListOf<Todo>()
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val binding: ItemTodoBinding
         if (convertView == null) {
@@ -26,17 +26,19 @@ class TODOAdapter(
         }
         val todos = getItem(position)
         binding.todos = todos
-
         binding.delete.setOnClickListener {
-            newList.add(data[position])
-            list.addAll(data)
-            list.removeAt(position)
-            data = list
+            list.add(getItem(position))
+            data.removeAt(position)
+            dataListener.dataListener(list)
             notifyDataSetChanged()
         }
 
         return binding.root
     }
 
-    fun getDeletedList() = newList
+    fun getDeletedList() = data
+
+    interface DataListener {
+        fun dataListener(data: ArrayList<Todo>)
+    }
 }
